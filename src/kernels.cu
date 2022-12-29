@@ -7,6 +7,9 @@
 namespace kernels 
 {
 
+__device__ uint8_t bitbase_lookup[4] = {0, 1, 3, 2};
+static const uint64_t bitbase_mask = 0b11;
+
 __device__ __forceinline__ static uint64_t word_reverse_complement(
     const uint64_t kmer, uint8_t kmer_size) 
 {
@@ -31,8 +34,8 @@ __device__ __forceinline__ static uint64_t murmur_hash(uint64_t kmer)
   return kmer;
 }
 
-__global__ void initialize_hashtable_kernel(uint64_t *table_keys, uint32_t *table_values, 
-    const uint64_t *keys, const int size, const int capacity)
+__global__ void initialize_hashtable_kernel(uint64_t *table_keys, const int table_capacity, 
+    const uint64_t *keys, const int size)
 {
   int thread_id = blockIdx.x * blockDim.x + threadIdx.x;
   if (thread_id >= size) 
@@ -41,7 +44,7 @@ __global__ void initialize_hashtable_kernel(uint64_t *table_keys, uint32_t *tabl
   }
 
   uint64_t insert_key = keys[thread_id];
-  uint64_t hash = murmur_hash(insert_key) % capacity;
+  uint64_t hash = murmur_hash(insert_key) % table_capacity;
 
   while (true) 
   {
@@ -55,12 +58,12 @@ __global__ void initialize_hashtable_kernel(uint64_t *table_keys, uint32_t *tabl
     {
       return;
     }
-    hash = (hash + 1) % capacity;
+    hash = (hash + 1) % table_capacity;
   }
 }
 
-void initialize_hashtable(uint64_t *table_keys, uint32_t *table_values, 
-    const uint64_t *keys, const int size, const int capacity)
+void initialize_hashtable(uint64_t *table_keys, const int table_capacity,
+    const uint64_t *keys, const int size)
 {
   int min_grid_size;
   int thread_block_size;
@@ -70,7 +73,78 @@ void initialize_hashtable(uint64_t *table_keys, uint32_t *table_values,
 
   int grid_size = SDIV(size, thread_block_size);
   initialize_hashtable_kernel<<<grid_size, thread_block_size>>>(
-      table_keys, table_values, keys, size, capacity);
+      table_keys, table_capacity, keys, size);
+}
+
+__device__ __forceinline__ static uint64_t get_bitencoded_kmer(const char *read, 
+    const int kmer_size, const uint64_t rightshift)
+{
+  uint64_t kmer = 0;
+  uint64_t shift;
+  uint64_t bitbase;
+  for (int i = 0; i < kmer_size; i++)
+  {
+    shift = ((32 - i) - rightshift) * 2;
+    bitbase = bitbase_lookup[(read[i] >> 1) & bitbase_mask];
+    kmer |= (bitbase << shift);
+  }
+  return kmer;
+}
+
+__global__ void count_reads_kernel(uint64_t *table_keys, uint32_t *table_values, 
+    const int table_capacity, const char *reads, const int num_reads, const int read_length, 
+    const int kmer_size, const uint64_t rightshift)
+{
+  int thread_id = blockIdx.x * blockDim.x + threadIdx.x;
+  if (thread_id >= num_reads)
+  {
+    return;
+  }
+
+  // Iterate over valid kmers in the read
+  uint64_t insert_key;
+  uint64_t hash;
+  for (int i = 0; i < read_length - (kmer_size - 1); i++)
+  {
+    // Get the current kmer bit encoding
+    insert_key = get_bitencoded_kmer(&reads[thread_id*read_length + i], kmer_size, rightshift);
+    hash = murmur_hash(insert_key) % table_capacity;
+
+    // Count the kmer
+    while (true)
+    {
+      uint64_t table_key = table_keys[hash];
+      if (table_key == kEmpty)
+      {
+        break;
+      }
+      if (table_key == insert_key)
+      {
+        atomicAdd((unsigned int *)&table_values[hash], 1);
+        break;
+      }
+      hash = (hash + 1) % table_capacity;
+    }
+
+    //__syncthreads();
+    // TODO: add revcomp support and test correctness against old cucounter
+  }
+}
+
+void count_reads(uint64_t *table_keys, uint32_t *table_values, const int table_capacity,
+    const char *reads, const int num_reads, const int read_length, const int kmer_size)
+{
+  int min_grid_size;
+  int thread_block_size;
+  cuda_errchk(cudaOccupancyMaxPotentialBlockSize(
+        &min_grid_size, &thread_block_size, 
+        count_reads_kernel, 0, 0));
+
+  const uint64_t rightshift = (32 - kmer_size)*2;
+
+  int grid_size = SDIV(num_reads, thread_block_size);
+  count_reads_kernel<<<grid_size, thread_block_size>>>(table_keys, table_values, table_capacity, 
+      reads, num_reads, read_length, kmer_size, rightshift);
 }
 
 } // namespace kernels

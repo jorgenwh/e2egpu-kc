@@ -27,6 +27,12 @@ int main(int argc, char **argv)
 
   HashTable counter(unique_kmers, false, num_kmers, capacity);
 
+  const int header_length = 10;
+  const int read_length = 150;
+  const int reads_per_chunk = 50000;
+  const int kmer_size = 31;
+  counter.count("data/small.fa", header_length, read_length, reads_per_chunk, kmer_size);
+
   delete[] unique_kmers;
   return EXIT_SUCCESS;
 }

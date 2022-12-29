@@ -18,8 +18,8 @@ public:
   int size() const { return size_m; }
   int capacity() const { return capacity_m; }
 
-  void count(
-      const char *reads, const int num_reads, const int read_length, const int kmer_size);
+  void count(const char *filename, const int header_length, const int read_length, 
+      const int reads_per_chunk, const int kmer_size);
 
 private:
   int size_m;
