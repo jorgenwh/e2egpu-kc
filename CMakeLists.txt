@@ -10,6 +10,11 @@ set(CMAKE_CUDA_ARCHITECTURES "75")
 set(SOURCES ${SOURCES}
   src/io.cpp
   src/r2kmer.cpp
+  src/kernels.cu
+  src/hashtable.cu
 )
+
+add_compile_definitions(__CUDA_ERROR_CHECK__)
+add_compile_definitions(__USE_MURMUR_HASH__)
 
 add_executable(${PROJECT_NAME} src/main.cpp ${SOURCES})

@@ -23,16 +23,28 @@ inline void process_kmer(
   }
 }
 
-int read_to_kmers(
-    const char *read, const int read_length, uint64_t **kmers, const int kmer_size)
+int reads_to_kmers(const char *reads, const int num_reads, 
+    const int read_length, const int kmer_size, uint64_t **kmers)
 {
-  const int num_kmers = read_length - kmer_size;
+  const int kmers_per_read = read_length - (kmer_size - 1);
+  const int num_kmers = kmers_per_read * num_reads;
   const uint64_t rightshift = (32 - kmer_size)*2;
   *kmers = new uint64_t[num_kmers];
 
-  for (int i = 0; i < read_length-kmer_size; i++)
+  int read_index;
+  int kmer_index;
+
+  // Iterate over reads
+  for (int i = 0; i < num_reads; i++)
   {
-    process_kmer(&read[i], (*kmers)[i], kmer_size, rightshift);
+    read_index = i*read_length;
+    kmer_index = i*kmers_per_read;
+
+    // Iterate over kmers
+    for (int j = 0; j < kmers_per_read; j++)
+    {
+      process_kmer(&reads[read_index+j], (*kmers)[kmer_index + j], kmer_size, rightshift);
+    }
   }
 
   return num_kmers;
