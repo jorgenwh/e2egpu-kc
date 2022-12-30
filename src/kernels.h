@@ -15,6 +15,9 @@ void initialize_hashtable(uint64_t *table_keys, const int table_capacity,
 void count_reads(uint64_t *table_keys, uint32_t *table_values, const int table_capacity,
     const char *reads, const int num_reads, const int read_length, const int kmer_size);
 
+void lookup(uint64_t *table_keys, uint32_t *table_values, const int table_capacity, 
+    uint64_t *keys, uint32_t *values, const int size);
+
 } // namespace kernels
 
 #endif // KERNELS_H_

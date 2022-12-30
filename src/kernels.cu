@@ -147,4 +147,24 @@ void count_reads(uint64_t *table_keys, uint32_t *table_values, const int table_c
       reads, num_reads, read_length, kmer_size, rightshift);
 }
 
+__global__ void lookup_kernel(uint64_t *table_keys, uint32_t *table_values, const int table_capacity,
+    uint64_t *keys, uint32_t *values, const int size)
+{
+  ;
+}
+
+void lookup(uint64_t *table_keys, uint32_t *table_values, const int table_capacity, 
+    uint64_t *keys, uint32_t *values, const int size)
+{
+  int min_grid_size;
+  int thread_block_size;
+  cuda_errchk(cudaOccupancyMaxPotentialBlockSize(
+        &min_grid_size, &thread_block_size, 
+        lookup_kernel, 0, 0));
+
+  int grid_size = SDIV(size, thread_block_size);
+  lookup_kernel<<<grid_size, thread_block_size>>>(table_keys, table_values, table_capacity, 
+      keys, values, size);
+}
+
 } // namespace kernels

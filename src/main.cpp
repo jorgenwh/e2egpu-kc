@@ -33,6 +33,16 @@ int main(int argc, char **argv)
   const int kmer_size = 31;
   counter.count("data/small.fa", header_length, read_length, reads_per_chunk, kmer_size);
 
+  uint32_t *counts = new uint32_t[num_kmers];
+  counter.get(unique_kmers, counts, num_kmers);
+
+  for (int i = 0; i < 50; i++)
+  {
+    std::cout << counts[i] << ", ";
+  }
+  std::cout << "\n";
+
+  delete[] counts;
   delete[] unique_kmers;
   return EXIT_SUCCESS;
 }

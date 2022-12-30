@@ -20,6 +20,7 @@ public:
 
   void count(const char *filename, const int header_length, const int read_length, 
       const int reads_per_chunk, const int kmer_size);
+  void get(const uint64_t *keys, uint32_t *values, int size) const;
 
 private:
   int size_m;

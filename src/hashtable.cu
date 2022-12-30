@@ -56,7 +56,7 @@ void HashTable::count(const char *filename, const int header_length, const int r
   while (!reader.done())
   {
     char *reads;
-    int num_reads = reader.read_chunk(&reads, reads_per_chunk);
+    int num_reads = reader.read_chunk(&reads, reads_per_chunk, header_length, read_length);
 
     char *reads_d;
     cuda_errchk(
@@ -70,4 +70,19 @@ void HashTable::count(const char *filename, const int header_length, const int r
     delete[] reads;
     cuda_errchk(cudaFree(reads_d));
   }
+}
+
+void HashTable::get(const uint64_t *keys, uint32_t *values, int size) const
+{
+  uint64_t *keys_d;
+  uint32_t *values_d;
+  cuda_errchk(cudaMalloc(&keys_d, size*sizeof(uint64_t)));
+  cuda_errchk(cudaMalloc(&values_d, size*sizeof(uint32_t)));
+  cuda_errchk(cudaMemcpy(keys_d, keys, size*sizeof(uint64_t), cudaMemcpyHostToDevice));
+
+  kernels::lookup(keys_m, values_m, keys_d, values_d, size, capacity_m);
+
+  cuda_errchk(cudaMemcpy(values, values_d, size*sizeof(uint32_t), cudaMemcpyDeviceToHost)); 
+  cuda_errchk(cudaFree(keys_d));
+  cuda_errchk(cudaFree(values_d));
 }
