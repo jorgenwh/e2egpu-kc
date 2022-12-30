@@ -1,0 +1,65 @@
+Performing C++ SOURCE FILE Test CMAKE_HAVE_LIBC_PTHREAD failed with the following output:
+Change Dir: /home/jorgen/projects/e2egpu-kc/e2epy/build/temp.linux-x86_64-cpython-39/CMakeFiles/CMakeScratch/TryCompile-smjgVR
+
+Run Build Command(s):/usr/bin/make -f Makefile cmTC_8a7cc/fast && make[1]: Entering directory '/home/jorgen/projects/e2egpu-kc/e2epy/build/temp.linux-x86_64-cpython-39/CMakeFiles/CMakeScratch/TryCompile-smjgVR'
+/usr/bin/make  -f CMakeFiles/cmTC_8a7cc.dir/build.make CMakeFiles/cmTC_8a7cc.dir/build
+make[2]: Entering directory '/home/jorgen/projects/e2egpu-kc/e2epy/build/temp.linux-x86_64-cpython-39/CMakeFiles/CMakeScratch/TryCompile-smjgVR'
+Building CXX object CMakeFiles/cmTC_8a7cc.dir/src.cxx.o
+/usr/bin/c++ -DCMAKE_HAVE_LIBC_PTHREAD  -DVERSION_INFO=\'0.0.1\'  -o CMakeFiles/cmTC_8a7cc.dir/src.cxx.o -c /home/jorgen/projects/e2egpu-kc/e2epy/build/temp.linux-x86_64-cpython-39/CMakeFiles/CMakeScratch/TryCompile-smjgVR/src.cxx
+Linking CXX executable cmTC_8a7cc
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_8a7cc.dir/link.txt --verbose=1
+/usr/bin/c++ -DVERSION_INFO=\'0.0.1\'  CMakeFiles/cmTC_8a7cc.dir/src.cxx.o -o cmTC_8a7cc 
+/usr/bin/ld: CMakeFiles/cmTC_8a7cc.dir/src.cxx.o: in function `main':
+src.cxx:(.text+0x46): undefined reference to `pthread_create'
+/usr/bin/ld: src.cxx:(.text+0x52): undefined reference to `pthread_detach'
+/usr/bin/ld: src.cxx:(.text+0x5e): undefined reference to `pthread_cancel'
+/usr/bin/ld: src.cxx:(.text+0x6f): undefined reference to `pthread_join'
+collect2: error: ld returned 1 exit status
+make[2]: *** [CMakeFiles/cmTC_8a7cc.dir/build.make:99: cmTC_8a7cc] Error 1
+make[2]: Leaving directory '/home/jorgen/projects/e2egpu-kc/e2epy/build/temp.linux-x86_64-cpython-39/CMakeFiles/CMakeScratch/TryCompile-smjgVR'
+make[1]: *** [Makefile:127: cmTC_8a7cc/fast] Error 2
+make[1]: Leaving directory '/home/jorgen/projects/e2egpu-kc/e2epy/build/temp.linux-x86_64-cpython-39/CMakeFiles/CMakeScratch/TryCompile-smjgVR'
+
+
+Source file was:
+#include <pthread.h>
+
+static void* test_func(void* data)
+{
+  return data;
+}
+
+int main(void)
+{
+  pthread_t thread;
+  pthread_create(&thread, NULL, test_func, NULL);
+  pthread_detach(thread);
+  pthread_cancel(thread);
+  pthread_join(thread, NULL);
+  pthread_atfork(NULL, NULL, NULL);
+  pthread_exit(NULL);
+
+  return 0;
+}
+
+
+Determining if the function pthread_create exists in the pthreads failed with the following output:
+Change Dir: /home/jorgen/projects/e2egpu-kc/e2epy/build/temp.linux-x86_64-cpython-39/CMakeFiles/CMakeScratch/TryCompile-5GmAyR
+
+Run Build Command(s):/usr/bin/make -f Makefile cmTC_86bf9/fast && make[1]: Entering directory '/home/jorgen/projects/e2egpu-kc/e2epy/build/temp.linux-x86_64-cpython-39/CMakeFiles/CMakeScratch/TryCompile-5GmAyR'
+/usr/bin/make  -f CMakeFiles/cmTC_86bf9.dir/build.make CMakeFiles/cmTC_86bf9.dir/build
+make[2]: Entering directory '/home/jorgen/projects/e2egpu-kc/e2epy/build/temp.linux-x86_64-cpython-39/CMakeFiles/CMakeScratch/TryCompile-5GmAyR'
+Building CXX object CMakeFiles/cmTC_86bf9.dir/CheckFunctionExists.cxx.o
+/usr/bin/c++   -DVERSION_INFO=\'0.0.1\' -DCHECK_FUNCTION_EXISTS=pthread_create -o CMakeFiles/cmTC_86bf9.dir/CheckFunctionExists.cxx.o -c /home/jorgen/projects/e2egpu-kc/e2epy/build/temp.linux-x86_64-cpython-39/CMakeFiles/CMakeScratch/TryCompile-5GmAyR/CheckFunctionExists.cxx
+Linking CXX executable cmTC_86bf9
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_86bf9.dir/link.txt --verbose=1
+/usr/bin/c++ -DVERSION_INFO=\'0.0.1\' -DCHECK_FUNCTION_EXISTS=pthread_create CMakeFiles/cmTC_86bf9.dir/CheckFunctionExists.cxx.o -o cmTC_86bf9  -lpthreads 
+/usr/bin/ld: cannot find -lpthreads
+collect2: error: ld returned 1 exit status
+make[2]: *** [CMakeFiles/cmTC_86bf9.dir/build.make:99: cmTC_86bf9] Error 1
+make[2]: Leaving directory '/home/jorgen/projects/e2egpu-kc/e2epy/build/temp.linux-x86_64-cpython-39/CMakeFiles/CMakeScratch/TryCompile-5GmAyR'
+make[1]: *** [Makefile:127: cmTC_86bf9/fast] Error 2
+make[1]: Leaving directory '/home/jorgen/projects/e2egpu-kc/e2epy/build/temp.linux-x86_64-cpython-39/CMakeFiles/CMakeScratch/TryCompile-5GmAyR'
+
+
+

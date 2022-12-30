@@ -1,8 +1,7 @@
 cmake_minimum_required(VERSION 3.16)
+project(e2egpu_kc LANGUAGES CXX CUDA)
 
-set(CMAKE_CXX_FLAGS "-march=native -O3")
-set(CMAKE_CUDA_FLAGS "-march=native -O3")
-set(CMAKE_CUDA_ARCHITECTURES "75")
+find_package(CUDA REQUIRED)
 
 set(SOURCES ${SOURCES}
   src/io.cpp
@@ -11,19 +10,11 @@ set(SOURCES ${SOURCES}
   src/hashtable.cu
 )
 
+set(CMAKE_CXX_FLAGS "-march=native -O3")
+set(CMAKE_CUDA_FLAGS "-march=native -O3")
+set(CMAKE_CUDA_ARCHITECTURES "75")
+
 add_compile_definitions(__CUDA_ERROR_CHECK__)
 add_compile_definitions(__USE_MURMUR_HASH__)
 
-find_package(CUDA REQUIRED)
-
-if(${py} MATCHES "True")
-  project(e2epy_backend LANGUAGES CXX CUDA)
-  find_package(pybind11 REQUIRED)
-  set(SOURCE_DIR "e2epy/backend")
-  include_directories(${SOURCE_DIR})
-  pybind11_add_module(${PROJECT_NAME} ${SOURCES} "${SOURCE_DIR}/bindings.cpp")
-else()
-  project(e2egpu_kc LANGUAGES CXX CUDA)
-  add_executable(${PROJECT_NAME} src/main.cpp ${SOURCES})
-endif()
-
+add_executable(${PROJECT_NAME} src/main.cpp ${SOURCES})

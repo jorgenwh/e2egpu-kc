@@ -1,0 +1,7 @@
+pyproject.toml
+setup.py
+e2epy.egg-info/PKG-INFO
+e2epy.egg-info/SOURCES.txt
+e2epy.egg-info/dependency_links.txt
+e2epy.egg-info/not-zip-safe
+e2epy.egg-info/top_level.txt

@@ -8,10 +8,9 @@ set(SOURCE_DIR "e2epy/backend")
 include_directories(${SOURCE_DIR})
 
 set(SOURCES ${SOURCES}
-  src/io.cpp
-  src/r2kmer.cpp
-  src/kernels.cu
-  src/hashtable.cu
+  "${SOURCE_DIR}/io.cpp"
+  "${SOURCE_DIR}/kernels.cu"
+  "${SOURCE_DIR}/hashtable.cu"
 )
 
 set(CMAKE_CXX_FLAGS "-march=native -O3")
