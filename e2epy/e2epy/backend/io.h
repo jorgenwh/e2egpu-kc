@@ -12,7 +12,8 @@ public:
   FastaReader(const char *filename);
   ~FastaReader();
 
-  int read_chunk(char **buffer, const int num_reads);
+  int read_chunk(char **buffer, 
+      const int num_reads, const int header_length, const int read_length);
   bool done() const { return done_m; }
 private:
   std::ifstream *file_obj_m;

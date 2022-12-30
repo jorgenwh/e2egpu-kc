@@ -19,9 +19,10 @@ FastaReader::~FastaReader()
   delete file_obj_m;
 }
 
-int FastaReader::read_chunk(char **buffer, const int num_reads)
+int FastaReader::read_chunk(char **buffer, 
+    const int num_reads, const int header_length, const int read_length)
 {
-  *buffer = new char[num_reads*READ_LENGHT];
+  *buffer = new char[num_reads*read_length];
   int reads = 0;
   
   while (true)
@@ -37,13 +38,13 @@ int FastaReader::read_chunk(char **buffer, const int num_reads)
     }
 
     // Skip header
-    file_obj_m->seekg(HEADER_LENGTH + 1, std::ios::cur);
-    bytes_read_m += HEADER_LENGTH + 1;
+    file_obj_m->seekg(header_length + 1, std::ios::cur);
+    bytes_read_m += header_length + 1;
 
     // Read DNA read
-    file_obj_m->read(&(*buffer)[reads*READ_LENGHT], READ_LENGHT);
+    file_obj_m->read(&(*buffer)[reads*read_length], read_length);
     file_obj_m->seekg(1, std::ios::cur);
-    bytes_read_m += READ_LENGHT + 1;
+    bytes_read_m += read_length + 1;
 
     reads++;
   }

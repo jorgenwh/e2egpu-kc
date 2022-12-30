@@ -56,7 +56,7 @@ void HashTable::count(const char *filename, const int header_length, const int r
   while (!reader.done())
   {
     char *reads;
-    int num_reads = reader.read_chunk(&reads, reads_per_chunk);
+    int num_reads = reader.read_chunk(&reads, reads_per_chunk, header_length, read_length);
 
     char *reads_d;
     cuda_errchk(

@@ -26,5 +26,11 @@ PYBIND11_MODULE(e2epy_backend, m)
       const bool keys_on_device = true;
       return new HashTable(keys, keys_on_device, size, capacity);
     }))
+    .def("count", [](HashTable &self, 
+          const std::string &filename, const int header_length, const int read_length, 
+          const int reads_per_chunk, const int kmer_size)
+    {
+      self.count(filename.c_str(), header_length, read_length, reads_per_chunk, kmer_size);
+    })
     ;
 }
