@@ -150,7 +150,25 @@ void count_reads(uint64_t *table_keys, uint32_t *table_values, const int table_c
 __global__ void lookup_kernel(uint64_t *table_keys, uint32_t *table_values, const int table_capacity,
     uint64_t *keys, uint32_t *values, const int size)
 {
-  ;
+  int thread_id = blockIdx.x * blockDim.x + threadIdx.x;
+  if (thread_id >= size)
+  {
+    return;
+  }
+
+  uint64_t lookup_key = keys[thread_id];
+  uint64_t hash = murmur_hash(lookup_key) % table_capacity;
+
+  while (true) 
+  {
+    uint64_t table_key = table_keys[hash];
+    if (table_key == lookup_key || table_key == kEmpty) 
+    {
+      values[thread_id] = (table_key == lookup_key) ? table_values[hash] : 0;
+      return;
+    }
+    hash = (hash + 1) % table_capacity;
+  }
 }
 
 void lookup(uint64_t *table_keys, uint32_t *table_values, const int table_capacity, 

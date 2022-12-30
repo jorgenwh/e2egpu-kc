@@ -80,7 +80,7 @@ void HashTable::get(const uint64_t *keys, uint32_t *values, int size) const
   cuda_errchk(cudaMalloc(&values_d, size*sizeof(uint32_t)));
   cuda_errchk(cudaMemcpy(keys_d, keys, size*sizeof(uint64_t), cudaMemcpyHostToDevice));
 
-  kernels::lookup(keys_m, values_m, keys_d, values_d, size, capacity_m);
+  kernels::lookup(keys_m, values_m, capacity_m, keys_d, values_d, size);
 
   cuda_errchk(cudaMemcpy(values, values_d, size*sizeof(uint32_t), cudaMemcpyDeviceToHost)); 
   cuda_errchk(cudaFree(keys_d));
