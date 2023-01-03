@@ -1,0 +1,65 @@
+Performing C++ SOURCE FILE Test CMAKE_HAVE_LIBC_PTHREAD failed with the following output:
+Change Dir: /home/jorgen/projects/e2egpu-kc/build/temp.linux-x86_64-cpython-39/CMakeFiles/CMakeScratch/TryCompile-QszX1j
+
+Run Build Command(s):/usr/bin/make -f Makefile cmTC_3508a/fast && make[1]: Entering directory '/home/jorgen/projects/e2egpu-kc/build/temp.linux-x86_64-cpython-39/CMakeFiles/CMakeScratch/TryCompile-QszX1j'
+/usr/bin/make  -f CMakeFiles/cmTC_3508a.dir/build.make CMakeFiles/cmTC_3508a.dir/build
+make[2]: Entering directory '/home/jorgen/projects/e2egpu-kc/build/temp.linux-x86_64-cpython-39/CMakeFiles/CMakeScratch/TryCompile-QszX1j'
+Building CXX object CMakeFiles/cmTC_3508a.dir/src.cxx.o
+/usr/bin/c++ -DCMAKE_HAVE_LIBC_PTHREAD  -DVERSION_INFO=\'0.0.1\'  -o CMakeFiles/cmTC_3508a.dir/src.cxx.o -c /home/jorgen/projects/e2egpu-kc/build/temp.linux-x86_64-cpython-39/CMakeFiles/CMakeScratch/TryCompile-QszX1j/src.cxx
+Linking CXX executable cmTC_3508a
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_3508a.dir/link.txt --verbose=1
+/usr/bin/c++ -DVERSION_INFO=\'0.0.1\'  CMakeFiles/cmTC_3508a.dir/src.cxx.o -o cmTC_3508a 
+/usr/bin/ld: CMakeFiles/cmTC_3508a.dir/src.cxx.o: in function `main':
+src.cxx:(.text+0x46): undefined reference to `pthread_create'
+/usr/bin/ld: src.cxx:(.text+0x52): undefined reference to `pthread_detach'
+/usr/bin/ld: src.cxx:(.text+0x5e): undefined reference to `pthread_cancel'
+/usr/bin/ld: src.cxx:(.text+0x6f): undefined reference to `pthread_join'
+collect2: error: ld returned 1 exit status
+make[2]: *** [CMakeFiles/cmTC_3508a.dir/build.make:99: cmTC_3508a] Error 1
+make[2]: Leaving directory '/home/jorgen/projects/e2egpu-kc/build/temp.linux-x86_64-cpython-39/CMakeFiles/CMakeScratch/TryCompile-QszX1j'
+make[1]: *** [Makefile:127: cmTC_3508a/fast] Error 2
+make[1]: Leaving directory '/home/jorgen/projects/e2egpu-kc/build/temp.linux-x86_64-cpython-39/CMakeFiles/CMakeScratch/TryCompile-QszX1j'
+
+
+Source file was:
+#include <pthread.h>
+
+static void* test_func(void* data)
+{
+  return data;
+}
+
+int main(void)
+{
+  pthread_t thread;
+  pthread_create(&thread, NULL, test_func, NULL);
+  pthread_detach(thread);
+  pthread_cancel(thread);
+  pthread_join(thread, NULL);
+  pthread_atfork(NULL, NULL, NULL);
+  pthread_exit(NULL);
+
+  return 0;
+}
+
+
+Determining if the function pthread_create exists in the pthreads failed with the following output:
+Change Dir: /home/jorgen/projects/e2egpu-kc/build/temp.linux-x86_64-cpython-39/CMakeFiles/CMakeScratch/TryCompile-6uMV6l
+
+Run Build Command(s):/usr/bin/make -f Makefile cmTC_7bc77/fast && make[1]: Entering directory '/home/jorgen/projects/e2egpu-kc/build/temp.linux-x86_64-cpython-39/CMakeFiles/CMakeScratch/TryCompile-6uMV6l'
+/usr/bin/make  -f CMakeFiles/cmTC_7bc77.dir/build.make CMakeFiles/cmTC_7bc77.dir/build
+make[2]: Entering directory '/home/jorgen/projects/e2egpu-kc/build/temp.linux-x86_64-cpython-39/CMakeFiles/CMakeScratch/TryCompile-6uMV6l'
+Building CXX object CMakeFiles/cmTC_7bc77.dir/CheckFunctionExists.cxx.o
+/usr/bin/c++   -DVERSION_INFO=\'0.0.1\' -DCHECK_FUNCTION_EXISTS=pthread_create -o CMakeFiles/cmTC_7bc77.dir/CheckFunctionExists.cxx.o -c /home/jorgen/projects/e2egpu-kc/build/temp.linux-x86_64-cpython-39/CMakeFiles/CMakeScratch/TryCompile-6uMV6l/CheckFunctionExists.cxx
+Linking CXX executable cmTC_7bc77
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_7bc77.dir/link.txt --verbose=1
+/usr/bin/c++ -DVERSION_INFO=\'0.0.1\' -DCHECK_FUNCTION_EXISTS=pthread_create CMakeFiles/cmTC_7bc77.dir/CheckFunctionExists.cxx.o -o cmTC_7bc77  -lpthreads 
+/usr/bin/ld: cannot find -lpthreads
+collect2: error: ld returned 1 exit status
+make[2]: *** [CMakeFiles/cmTC_7bc77.dir/build.make:99: cmTC_7bc77] Error 1
+make[2]: Leaving directory '/home/jorgen/projects/e2egpu-kc/build/temp.linux-x86_64-cpython-39/CMakeFiles/CMakeScratch/TryCompile-6uMV6l'
+make[1]: *** [Makefile:127: cmTC_7bc77/fast] Error 2
+make[1]: Leaving directory '/home/jorgen/projects/e2egpu-kc/build/temp.linux-x86_64-cpython-39/CMakeFiles/CMakeScratch/TryCompile-6uMV6l'
+
+
+
